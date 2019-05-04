@@ -7,7 +7,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.get('/', (req, res) => {
-    res.send('Hello from App Engine!');
+    res.send('Hello from API!');
+});
+
+app.get('/error', (req, res) => {
+    res.send('Error from API!');
 });
 
 // Listen for requests on environment port if specified, or 8080
