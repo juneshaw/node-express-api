@@ -14,6 +14,10 @@ app.get('/error', (req, res) => {
     res.send('Error from API!');
 });
 
+app.get('/books', (req, res) => {
+    res.send('Books');
+});
+
 // Listen for requests on environment port if specified, or 8080
 const PORT = process.env.PORT || 8080;
 
