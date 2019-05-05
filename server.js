@@ -1,11 +1,27 @@
 const express = require('express');
 const app = express();
+const sqlite3 = require('sqlite3');
 
-console.log('process env: ', process.env);
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+// Initialize database from files
+// let db = new sqlite3.Database('./db/library.db.sql', sqlite3.OPEN_READWRITE, (err) => {
+//     if (err) {
+//       console.error(err.message);
+//     }
+//     console.log('Connected to the library database.');
+//   });
+
+var routes = require('./routes/index');
+var books = require('./routes/books');
+
+// Use router
+app.use('/', routes);
+app.use('/books', books);
+
+// Routes before router added
 app.get('/', (req, res) => {
     res.send('Hello from API!');
 });
