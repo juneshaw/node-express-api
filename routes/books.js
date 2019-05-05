@@ -15,28 +15,6 @@ function connectDb() {
   });
 }
 
-
-// let db = new sqlite3.Database('./db/library.db.sql', sqlite3.OPEN_READWRITE, (err) => {
-    // if (err) {
-    //     console.error(err.message);
-    //   }
-    //   console.log('Connected to the library database.');
-    // });
-// let db = sqlite3.connect('./db/library.db.sql');
-// console.log('Connected to the library database.');
-
-// const sqlStmt = `SELECT id as id,
-// name as name,
-// year as year
-// FROM books`;
-// console.log('Making query');
-// db.each(sqlStmt, [], (err, row) => {
-//     if (err) {
-//     console.error(err.message);
-//     }
-//     console.log(row.id + "\t" + row.name + "\t" + row.year);
-// });
-
 router.get('/', function(req, res, next) {
     connectDb()
         .then(function (db) {
