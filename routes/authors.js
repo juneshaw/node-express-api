@@ -17,12 +17,12 @@ function connectDb() {
 router.get('/', function(req, res, next) {
     connectDb()
         .then(function (db) {
-            db.all("SELECT * FROM books", function(err, books) {
+            db.all("SELECT * FROM authors", function(err, authors) {
               if (err) {
                 console.error(err.message);
               }
-            // res.render({books});
-            res.send({books});
+            // res.render({authors});
+            res.send({authors});
             });
         })
         .catch(function(err) {
