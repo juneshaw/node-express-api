@@ -9,7 +9,6 @@ function connectDb() {
             reject(new Error('Failed database connect'));
             console.error(err.message);
         }
-        console.log('the db: ', db);
         resolve(db);
     }); 
   });
@@ -18,19 +17,16 @@ function connectDb() {
 router.get('/', function(req, res, next) {
     connectDb()
         .then(function (db) {
-            console.log('Async db connect', db);
-            
             db.all("SELECT * FROM authors", function(err, authors) {
               if (err) {
                 console.error(err.message);
               }
-              console.log("Row: ", authors);
             // res.render({authors});
             res.send({authors});
             });
         })
         .catch(function(err) {
-            console.log('Error db connect')
+            console.error('Error db connect')
         });
     });
 
