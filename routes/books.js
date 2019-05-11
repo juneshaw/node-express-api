@@ -15,9 +15,25 @@ function connectDb() {
 }
 
 router.get('/', function(req, res, next) {
+  connectDb()
+      .then(function (db) {
+          db.all("SELECT * FROM books", function(err, books) {
+            if (err) {
+              console.error(err.message);
+            }
+          // res.render({books});
+          res.send({books});
+          });
+      })
+      .catch(function(err) {
+          console.error('Error db connect')
+      });
+  });
+
+  router.get('/:id', function(req, res, next) {
     connectDb()
         .then(function (db) {
-            db.all("SELECT * FROM books", function(err, books) {
+            db.all("SELECT * FROM books where id = " + req.params.id, function(err, books) {
               if (err) {
                 console.error(err.message);
               }
