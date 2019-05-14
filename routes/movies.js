@@ -17,7 +17,7 @@ function connectDb() {
 router.get('/', function(req, res, next) {
   connectDb()
       .then(function (db) {
-          db.all("SELECT * FROM movies", function(err, movies) {
+          db.all("SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies", function(err, movies) {
             if (err) {
               console.error(err.message);
             }
