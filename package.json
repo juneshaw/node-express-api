@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/juneshaw/node-express-api.git"
   },
-  "author": "",
+  "author": "June Shaw",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/juneshaw/node-express-api/issues"

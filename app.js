@@ -9,8 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const routes = require('./routes/index');
-const books = require('./routes/books');
-const authors = require('./routes/authors');
+const movies = require('./routes/movies');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,8 +17,7 @@ app.set('view engine', 'jade');
 
 // Use router
 app.use('/', routes);
-app.use('/books', books);
-app.use('/authors', authors);
+app.use('/movies', movies);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
