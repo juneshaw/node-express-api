@@ -9,6 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const routes = require('./routes/index');
+const movies = require('./routes/movies');
 const books = require('./routes/books');
 const authors = require('./routes/authors');
 
@@ -18,6 +19,7 @@ app.set('view engine', 'jade');
 
 // Use router
 app.use('/', routes);
+app.use('/movies', movies);
 app.use('/books', books);
 app.use('/authors', authors);
 
