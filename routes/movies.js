@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
+const pageSize = 50;
 
 function connectDb() {
     return new Promise(function(resolve, reject) {
@@ -15,9 +16,15 @@ function connectDb() {
 }
 
 router.get('/', function(req, res, next) {
+  const pageOffset = req.query.page && !isNaN(req.query.page) ? 
+    (Math.max(req.query.page, 1)-1) * pageSize :
+    0;
+  const pageLimit = req.query.page ? pageSize : -1;
+  const queryString = `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies LIMIT ${pageLimit} OFFSET ${pageOffset}`
   connectDb()
       .then(function (db) {
-          db.all("SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies", function(err, movies) {
+          console.log('query string: ', queryString);
+          db.all(queryString, function(err, movies) {
             if (err) {
               console.error(err.message);
             }
