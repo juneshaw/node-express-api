@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
             if (err) {
               console.error(err.message);
             }
-          // res.render({books});
+          // res.render({movies});
           res.send({movies});
           });
       })
@@ -40,35 +40,17 @@ router.get('/', function(req, res, next) {
   router.get('/:id', function(req, res, next) {
     connectDb()
         .then(function (db) {
-            db.all("SELECT * FROM books where id = " + req.params.id, function(err, books) {
+            db.all("SELECT * FROM movies where id = " + req.params.id, function(err, movie) {
               if (err) {
                 console.error(err.message);
               }
-            // res.render({books});
-            res.send({books});
+            // res.render({movie});
+            res.send({movies});
             });
         })
         .catch(function(err) {
             console.error('Error db connect')
         });
     });
-
-router.get('/:id/edit', function(req, res, next) {
-  Books().where('id', req.params.id).first().then(function (book) {
-    res.render('books/edit', {book: book});
-  });
-});
-
-router.post('/:id', function (req, res, next) {
-  Books().where('id', req.params.id).update(req.body).then(function (results) {
-    res.redirect('/books');
-  })
-});
-
-router.post('books/:id/delete', function (req, res, next) {
-  Books().where('id', req.params.id).del().then(function (results) {
-    res.redirect('/books');
-  })
-})
 
 module.exports = router;
