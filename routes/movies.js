@@ -33,9 +33,10 @@ const queryYear = year => {
   // WHERE releaseDate BETWEEN '${yearBeginDate}' AND '${yearEndDate}'`;
 };
 
-const queryGenre = genre => (
-  `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies WHERE genres etc.`
-);
+const queryGenre = genre => {
+  const genreWithoutQuotes = genre.replace(/['"]+/g, '');
+  return `${queryBasic()} WHERE movies.genres LIKE '%${genreWithoutQuotes}%'`
+};
 
 router.get('/', function(req, res, next) {
   let queryString;
