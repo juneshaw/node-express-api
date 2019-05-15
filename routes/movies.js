@@ -30,39 +30,52 @@ router.get('/', function(req, res, next) {
         // res.render({movies});
         res.send({movies});
       }
+      db.close((err) => {
+        if (err) {
+          return console.error(err.message);
+        }
+      });
     });
   })
   .catch(function(err) {
     console.error('Error db connect')
   });
+
 });
 
 router.get('/:id', function(req, res, next) {
-  const queryString = `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies INNER JOIN ratings on ratings.movieId = movies.movieId WHERE movies.movieId = ${req.params.id}`
+  //Works but no rating average
+  // const queryString = `SELECT m.movieID NOT NULL,  m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, r.rating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
+  //Attempt to have LEFT JOIN with flattened average
+  // const queryString = `SELECT m.movieID NOT NULL,  m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget FROM movies m LEFT OUTER JOIN (
+  //   select movieId, avg(rating) as averageRating
+  //   from ratings
+  //   group by movieId
+  //   ) as r on r.movieId = m.movieId
+  //   GROUP BY m.movieId, r.averageRating ORDER BY m.movieId`
+  // Works but nulls from movies even with LEFT JOIN
+  const queryString = `SELECT m.imdbId NOT NULL, m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, avg(r.rating) AS averageRating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
   connectDb('./db/movies.db')
   .then(function (db) {
     db.serialize(() => {
-      // Queries scheduled here will be serialized.
-      db.run(`ATTACH DATABASE "./db/ratings.db" AS "ratings"`)
+      db.run(`ATTACH DATABASE "./db/ratings.db" AS ratings`)
         .get(queryString, (err, movie) => {
           if (err) {
-            console.error(err.message);
-          } else {
+            return console.error(err.message);
+          }
             // res.render({movie});
             res.send({movie});
-          }
         });
     })
+    db.close((err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+    });
   })
   .catch(function(err) {
     console.error('Error db connect', err);
   });
-  // close the database connection
-  // db.close((err) => {
-  //   if (err) {
-  //     return console.error(err.message);
-  //   }
-  // });
 });
 
 module.exports = router;
