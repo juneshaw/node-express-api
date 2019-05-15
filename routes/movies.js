@@ -33,20 +33,21 @@ const queryYear = year => {
   // WHERE releaseDate BETWEEN '${yearBeginDate}' AND '${yearEndDate}'`;
 };
 
-const queryGenre = genre => (
-  `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies WHERE genres etc.`
-);
+const queryGenre = genre => {
+  const genreWithoutQuotes = genre.replace(/['"]+/g, '');
+  return `${queryBasic()} WHERE movies.genres LIKE '%${genreWithoutQuotes}%'`
+};
 
 router.get('/', function(req, res, next) {
   let queryString;
 
+  console.log('req.query is: ', req.query)
   if (req.query.year) {
     queryString = queryYear(req.query.year).concat(queryPageSuffix(req));
   } else if (req.query.genre) {
     queryString = queryGenre(req.query.genre).concat(queryPageSuffix(req));
   } else {
     queryString = queryBasic().concat(queryPageSuffix(req));
-    console.log('query for movies: ', queryString);
   }
 
   connectDb('./db/movies.db')
