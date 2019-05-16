@@ -14,9 +14,7 @@ function connectDb(databaseName) {
     }); 
   });
 };
-
 const queryBasic = () => `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies `;
-const queryFull = () => `SELECT imdbId, title, overview, releaseDate, printf ('$%d', budget) AS budget, runtime, genres, language, productionCompanies FROM movies `;
 
 const queryPageSuffix = (req) => {
   const pageOffset = req.query.page && !isNaN(req.query.page) ?
@@ -73,20 +71,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  //Works but no rating average
-  // const queryString = `SELECT m.movieID NOT NULL,  m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, r.rating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
-  //Attempt to have LEFT JOIN with flattened average
-  // //old but may workconst queryString = `SELECT m.movieID NOT NULL,  m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget FROM movies m LEFT OUTER JOIN (
-  // const queryString = `SELECT m.movieID NOT NULL,  m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget FROM movies m LEFT JOIN (
-  //   select movieId, avg(rating) as averageRating
-  //   from ratings
-  //   group by movieId
-  //   ) as r on r.movieId = m.movieId
-  //   GROUP BY m.movieId, r.averageRating HAVING m.movieId=${req.params.id}`
-  // //old but may work   GROUP BY m.movieId, r.averageRating ORDER BY m.movieId`
-  // Works but nulls from movies even with LEFT JOIN
-  const queryString = `SELECT m.imdbId, m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, avg(r.rating) AS averageRating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
-  // const queryString = `SELECT m.imdbId, m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, avg(r.rating) AS averageRating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
+  const queryString = 
+  `SELECT imdbId, title, overview, releaseDate, printf ('$%d', budget) AS budget, runtime, genres, language, productionCompanies,
+  avg(r.rating) AS averageRating FROM movies m
+  LEFT OUTER JOIN ratings r
+  ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`;
+
   connectDb('./db/movies.db')
   .then(function (db) {
     db.serialize(() => {
