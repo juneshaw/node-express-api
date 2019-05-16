@@ -15,6 +15,7 @@ function connectDb(databaseName) {
   });
 };
 const queryBasic = () => `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies `;
+const queryFull = () => `SELECT imdbId, title, overview, releaseDate, printf ('$%d', budget) AS budget, runtime, genres, language, productionCompanies FROM movies `;
 
 const queryPageSuffix = (req) => {
   const pageOffset = req.query.page && !isNaN(req.query.page) ?
