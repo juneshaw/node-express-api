@@ -16,6 +16,7 @@ function connectDb(databaseName) {
 };
 
 const queryBasic = () => `SELECT imdbId, title, genres, releaseDate, printf ('$%d', budget) AS budget FROM movies `;
+const queryFull = () => `SELECT imdbId, title, overview, releaseDate, printf ('$%d', budget) AS budget, runtime, genres, language, productionCompanies FROM movies `;
 
 const queryPageSuffix = (req) => {
   const pageOffset = req.query.page && !isNaN(req.query.page) ?
@@ -85,6 +86,7 @@ router.get('/:id', function(req, res, next) {
   // //old but may work   GROUP BY m.movieId, r.averageRating ORDER BY m.movieId`
   // Works but nulls from movies even with LEFT JOIN
   const queryString = `SELECT m.imdbId, m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, avg(r.rating) AS averageRating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
+  // const queryString = `SELECT m.imdbId, m.title, m.genres, m.releaseDate, printf ('$%d', m.budget) AS budget, avg(r.rating) AS averageRating FROM movies m LEFT OUTER JOIN ratings r ON m.movieId = r.movieId WHERE m.movieId = ${req.params.id}`
   connectDb('./db/movies.db')
   .then(function (db) {
     db.serialize(() => {
