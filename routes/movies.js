@@ -1,6 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
+
+/**
+ * @swagger
+ * components:
+ *    schemas:
+ *      Movie:
+ *       type: object
+ *       required:
+ *         - imdbId
+ *         - title
+ *         - genres
+ *         - releaseDate
+ *         - budget
+ *       properties:
+ *         imdbId:
+ *           type: string
+ *           description: IMDB id
+ *         title:
+ *           type: string
+ *           description: title
+ *         genres:
+ *           type: string
+ *           description: genres
+ *         releaseDate:
+ *           type: date
+ *           description: release date
+ *         budget:
+ *           type: number
+ *           description: budget in dollar units
+ * 
+ */
+
+ /**
+  * @swagger
+  * tags:
+  *   name: Movies
+  *   description: The movies managing API
+  */
+
 const pageSize = 50;
 
 function connectDb(databaseName) {
@@ -38,6 +77,22 @@ const queryGenre = genre => {
   return `${queryBasic()} WHERE movies.genres LIKE '%${genreWithoutQuotes}%'`
 };
 
+/**
+ * @swagger
+ * /movies:
+ *   get:
+ *     summary: Returns the list of all the movies
+ *     tags: [Movies]
+ *     responses:
+ *       200:
+ *         description: The list of the movies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ */
 router.get('/', function(req, res, next) {
   let queryString;
 
@@ -70,6 +125,30 @@ router.get('/', function(req, res, next) {
     console.error('Error db connect')
   });
 });
+
+/**
+ * @swagger
+ * /movies/{id}:
+ *   get:
+ *     summary: Get the movie by id
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The movie id
+ *     responses:
+ *       200:
+ *         description: The book description by id
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Movie'
+ *       404:
+ *         description: The movie was not found
+ */
 
 router.get('/:id', function(req, res, next) {
   const queryString = 

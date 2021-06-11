@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 
 const app = express();
 
@@ -7,12 +9,34 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "Movies API",
+			version: "1.0.0",
+			description: "A simple Express Library API",
+		},
+		servers: [
+			{
+				url: "http://localhost:3000",
+			},
+		],
+	},
+	apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsDoc(options);
+
 const routes = require('./routes/index');
 const movies = require('./routes/movies');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// Swagger documentation
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 // Use router
 app.use('/', routes);
