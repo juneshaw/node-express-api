@@ -93,7 +93,8 @@ const queryGenre = genre => {
  *               items:
  *                 $ref: '#/components/schemas/Movie'
  */
-router.get('/', function(req, res, next) {
+
+ router.get('/', function(req, res, next) {
   let queryString;
 
   if (req.query.year) {

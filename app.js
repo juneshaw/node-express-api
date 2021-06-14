@@ -9,6 +9,9 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+const routes = require('./routes/index');
+const movies = require('./routes/movies');
+
 const options = {
 	definition: {
 		openapi: "3.0.0",
@@ -28,8 +31,8 @@ const options = {
 
 const specs = swaggerJsDoc(options);
 
-const routes = require('./routes/index');
-const movies = require('./routes/movies');
+routes.use('/api-docs', swaggerUI.serve);
+routes.get('/api-docs', swaggerUI.setup(specs));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
